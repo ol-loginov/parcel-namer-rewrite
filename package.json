@@ -9,6 +9,9 @@
   },
   "author": "",
   "license": "ISC",
+  "repository": {
+    "url": "https://github.com/ol-loginov/parcel-namer-rewrite"
+  },
   "source": "src/Namer.ts",
   "main": "lib/Namer.js",
   "devDependencies": {
