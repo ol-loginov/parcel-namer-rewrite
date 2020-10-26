@@ -54,8 +54,8 @@ export default new Namer({
         }
 
         let bundleHash = '';
-        let appendHash = options.mode !== 'development' || this.config.developmentHashing;
-        if (appendHash) {
+
+        if (options.mode !== 'development' || this.config.developmentHashing) {
             let assets = [];
             bundle.traverseAssets((asset) => assets.push(asset));
 
