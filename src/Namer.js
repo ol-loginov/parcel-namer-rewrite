@@ -53,8 +53,9 @@ export default new Namer({
             return superName;
         }
 
-        let rewriteHash = '';
-        if (options.mode !== 'development' || this.config.developmentHashing) {
+        let bundleHash = '';
+        let appendHash = options.mode !== 'development' || this.config.developmentHashing;
+        if (appendHash) {
             let assets = [];
             bundle.traverseAssets((asset) => assets.push(asset));
 
@@ -67,12 +68,12 @@ export default new Namer({
                 }
             }
 
-            rewriteHash = hash.digest('hex').substr(0, 6);
+            bundleHash = hash.digest('hex').substr(0, 6);
         }
 
         const rewrite = superName
             .replace(rule.test, rule.to)
-            .replace(/{(.?)hash(.?)}/, `$1${rewriteHash}$2`);
+            .replace(/{(.?)hash(.?)}/, bundleHash.length > 0 ? `$1${bundleHash}$2` : '');
 
         logger.info({
             message: `Rewrite ${superName} -> ${rewrite}`
