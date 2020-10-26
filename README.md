@@ -36,9 +36,8 @@ Plugin takes all config from package.json file. Example of config is below:
 
   
     "parcel-namer-rewrite": {
-        /* "chain": "@parcel/namer-default" <- uncomment this, if you want to chain non-default namer */
-        
-        
+        "chain": "@parcel/namer-default",
+                
         "rules": {
             "styles/(.*).css": "$1.{hash}.css",
             "scripts/TestMePlease.js": "Dunno.js"
@@ -46,10 +45,13 @@ Plugin takes all config from package.json file. Example of config is below:
     }
 }
 ```
+p.s. Line with "chain" is optional, you may omit that line, and default namer will be used to get actual names
 
 This example:
-1) rewrites all .css bundles in "styles" folder of distDir directly to distDir and adds hashes to names.
-2) moves "scripts/TestMePlease.js" to "Dunno.js"
+1) Rewrites all .css bundles in "styles" folder of distDir directly to distDir and adds hashes to names.
+2) Moves "scripts/TestMePlease.js" to "Dunno.js"
+
+
 
 ### How write rules
 
