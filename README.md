@@ -36,7 +36,7 @@ Plugin takes all config from package.json file. Example of config is below:
 
   
     "parcel-namer-rewrite": {
-        // "chain": "@parcel/namer-default" <- uncomment this, if you want to chain non-default namer
+        /* "chain": "@parcel/namer-default" <- uncomment this, if you want to chain non-default namer */
         
         
         "rules": {
