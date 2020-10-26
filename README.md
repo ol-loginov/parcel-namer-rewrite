@@ -6,6 +6,24 @@ To get more control over bundle file names.
 You may find another useful plugin - https://github.com/ol-loginov/parcel-reporter-entries to
  get report about actual bundle file names. 
 
+## Install and usage
+
+
+Install the package first:
+```
+npm install --save-dev parcel-namer-rewrite
+```
+
+And edit `.parcelrc` file to add new namer (put it before or instead default one):
+```
+/* .parcelrc */
+{
+  "extends": "@parcel/config-default",
+  "namers": [ "parcel-namer-rewrite" ]
+}
+```
+
+
 ## Configuration
 
 Plugin takes all config from package.json file. Example of config is below:
@@ -18,6 +36,9 @@ Plugin takes all config from package.json file. Example of config is below:
 
   
     "parcel-namer-rewrite": {
+        // "chain": "@parcel/namer-default" <- uncomment this, if you want to chain non-default namer
+        
+        
         "rules": {
             "styles/(.*).css": "$1.{hash}.css",
             "scripts/TestMePlease.js": "Dunno.js"
