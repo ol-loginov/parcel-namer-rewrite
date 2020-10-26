@@ -1,6 +1,6 @@
 {
   "name": "parcel-namer-rewrite",
-  "version": "2.0.0-beta.1-1",
+  "version": "2.0.0-beta.1-2",
   "description": "",
   "scripts": {
     "build": "rimraf ./target && babel src/ -d lib/",
@@ -12,7 +12,7 @@
   "repository": {
     "url": "https://github.com/ol-loginov/parcel-namer-rewrite"
   },
-  "source": "src/Namer.ts",
+  "source": "src/Namer.js",
   "main": "lib/Namer.js",
   "devDependencies": {
     "@babel/cli": "^7.12.1",
@@ -30,7 +30,7 @@
     "assert": "^2.0.0"
   },
   "files": [
-    "src/*.js"
+    "lib/*.js"
   ],
   "engines": {
     "parcel": "^2.0.0-beta.1",
