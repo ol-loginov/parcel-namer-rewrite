@@ -61,7 +61,7 @@ export default new Namer({
             const asset = assets[i];
             if (asset.filePath) {
                 const fileHash = await md5FromFilePath(asset.fs, asset.filePath);
-                hash.update([asset.filePath, fileHash]);
+                hash.update([asset.filePath, fileHash].join(':'));
             }
         }
 
