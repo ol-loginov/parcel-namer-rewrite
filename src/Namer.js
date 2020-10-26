@@ -1,6 +1,8 @@
 import {CONFIG, Namer} from '@parcel/plugin';
 import {Config} from "./Config";
 import {PluginLogger} from '@parcel/logger';
+import crypto from "crypto";
+import {md5FromFilePath} from "@parcel/utils";
 
 
 // noinspection JSUnusedGlobalSymbols
@@ -16,7 +18,7 @@ export default new Namer({
 
         const nameFromSuper = await this.delegate.name(opts);
         if (nameFromSuper != null) {
-            return this.rewrite(opts.bundle, opts.options, nameFromSuper, opts.logger);
+            return this.rewrite(opts.bundle, opts.bundleGraph, opts.options, nameFromSuper, opts.logger);
         }
         return nameFromSuper;
     },
@@ -45,15 +47,28 @@ export default new Namer({
         return this.config;
     },
 
-    rewrite(bundle: { id: string }, options: {}, superName: string, logger) {
+    async rewrite(bundle: { id: string }, bundleGraph: {}, options: {}, superName: string, logger) {
         const rule = this.config.selectRule(superName);
         if (!rule) {
             return superName;
         }
 
+        let assets = [];
+        bundle.traverseAssets((asset) => assets.push(asset));
+
+        let hash = crypto.createHash('md5');
+        for (let i = 0; i < assets.length; ++i) {
+            const asset = assets[i];
+            if (asset.filePath) {
+                const fileHash = await md5FromFilePath(asset.fs, asset.filePath);
+                hash.update([asset.filePath, fileHash]);
+            }
+        }
+
+        const hashHex = hash.digest('hex');
         const rewrite = superName
             .replace(rule.test, rule.to)
-            .replace(/{hash}/, bundle.id.substr(0, 6));
+            .replace(/{hash}/, hashHex.substr(0, 6));
 
         logger.info({
             message: `Rewrite ${superName} -> ${rewrite}`
