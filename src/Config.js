@@ -7,6 +7,7 @@ const PACKAGE_JSON_SECTION = "parcel-namer-rewrite";
 export class Config {
     rules: NamerRule[]
     chain: string
+    developmentHashing = false
 
     constructor() {
         this.chain = '@parcel/namer-default';
@@ -42,6 +43,10 @@ export class Config {
                     to: ruleTo
                 })
             })
+        }
+
+        if (packageSection && 'developmentHashing' in packageSection) {
+            this.developmentHashing = !!packageSection.developmentHashing;
         }
     }
 

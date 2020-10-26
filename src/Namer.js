@@ -53,22 +53,26 @@ export default new Namer({
             return superName;
         }
 
-        let assets = [];
-        bundle.traverseAssets((asset) => assets.push(asset));
+        let rewriteHash = '';
+        if (options.mode !== 'development' || this.config.developmentHashing) {
+            let assets = [];
+            bundle.traverseAssets((asset) => assets.push(asset));
 
-        let hash = crypto.createHash('md5');
-        for (let i = 0; i < assets.length; ++i) {
-            const asset = assets[i];
-            if (asset.filePath) {
-                const fileHash = await md5FromFilePath(asset.fs, asset.filePath);
-                hash.update([asset.filePath, fileHash].join(':'));
+            let hash = crypto.createHash('md5');
+            for (let i = 0; i < assets.length; ++i) {
+                const asset = assets[i];
+                if (asset.filePath) {
+                    const fileHash = await md5FromFilePath(asset.fs, asset.filePath);
+                    hash.update([asset.filePath, fileHash].join(':'));
+                }
             }
+
+            rewriteHash = hash.digest('hex').substr(0, 6);
         }
 
-        const hashHex = hash.digest('hex');
         const rewrite = superName
             .replace(rule.test, rule.to)
-            .replace(/{hash}/, hashHex.substr(0, 6));
+            .replace(/{(.?)hash(.?)}/, `$1${rewriteHash}$2`);
 
         logger.info({
             message: `Rewrite ${superName} -> ${rewrite}`
