@@ -51,11 +51,33 @@ This example:
 1) Rewrites all .css bundles in "styles" folder of distDir directly to distDir and adds hashes to names.
 2) Moves "scripts/TestMePlease.js" to "Dunno.js"
 
-
-
-### How write rules
+### How to write rules
 
 "rules" is the object with rules: "key" is RegExp pattern to search in file names, "value" is replacement
  strings (you may use RegExp references here)
 
+
+### Using hash in file names
+
+File name `"$1.{hash}.css"` adds hash before extension. If hash is empty (in development mode, for example), then you get double dot in file name:
+```
+"file.{hash}.css" -> "file..css"
+```
+
+But there is a solution - just put dot inside brackets. For example: `"file{.hash}.css"` or `"file{hash.}.css"`. In this case for empty hash strings all inside brackets will be removed. And you may use any single character instead of dot: `"file{~hash}.css"`, `"file{-hash}.css"` are valid replacements.
+
+In development mode hashes are blank for file names. You may force hashing in development mode by setting "developmentHashing" to `true`.
+Like this:
+
+```json5
+{
+    "parcel-namer-rewrite": {
+        "developmentHashing": true,
+                
+        "rules": {
+            /* some rules  */
+        }
+    }
+}
+```
 
