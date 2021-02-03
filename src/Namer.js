@@ -75,9 +75,10 @@ export default new Namer({
             .replace(rule.test, rule.to)
             .replace(/{(.?)hash(.?)}/, bundleHash.length > 0 ? `$1${bundleHash}$2` : '');
 
-        logger.info({
-            message: `Rewrite ${superName} -> ${rewrite}`
-        });
+        if ( this.config.noLogs != true )
+            logger.info({
+                message: `Rewrite ${superName} -> ${rewrite}`
+            });
 
         return rewrite;
     }
