@@ -89,7 +89,7 @@ This plugin will log every renamed file. To disable this feature, add this optio
 {
     "parcel-namer-rewrite": {
         // ...
-        "showLogs" : false
+        "silent" : true
     }
 }
 ```
