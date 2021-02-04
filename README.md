@@ -81,3 +81,17 @@ Like this:
 }
 ```
 
+### Hide logs
+
+This plugin will log every renamed file. To disable this feature, add this options to `package.json` :
+
+```json5
+{
+    "parcel-namer-rewrite": {
+        // ...
+        "silent" : true
+    }
+}
+```
+
+

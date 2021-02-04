@@ -28,6 +28,8 @@ export class Config {
         if (packageSection && 'chain' in packageSection) {
             this.chain = packageSection.chain;
         }
+        
+        this.silent = packageSection && 'silent' in packageSection && packageSection.silent;
 
         if (packageSection && 'rules' in packageSection) {
             Object.keys(packageSection.rules).forEach(k => {
