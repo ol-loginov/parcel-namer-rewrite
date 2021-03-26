@@ -56,26 +56,30 @@ export default new Namer({
         let bundleHash = '';
 
         if (options.mode !== 'development' || this.config.developmentHashing) {
-            let assets = [];
-            bundle.traverseAssets((asset) => assets.push(asset));
+            if (this.config.useParcelHash) {
+                bundleHash = bundle.hashReference;
+            } else {
+                let assets = [];
+                bundle.traverseAssets((asset) => assets.push(asset));
 
-            let hash = crypto.createHash('md5');
-            for (let i = 0; i < assets.length; ++i) {
-                const asset = assets[i];
-                if (asset.filePath) {
-                    const fileHash = await md5FromFilePath(asset.fs, asset.filePath);
-                    hash.update([asset.filePath, fileHash].join(':'));
+                let hash = crypto.createHash('md5');
+                for (let i = 0; i < assets.length; ++i) {
+                    const asset = assets[i];
+                    if (asset.filePath) {
+                        const fileHash = await md5FromFilePath(asset.fs, asset.filePath);
+                        hash.update([asset.filePath, fileHash].join(':'));
+                    }
                 }
-            }
 
-            bundleHash = hash.digest('hex').substr(0, 6);
+                bundleHash = hash.digest('hex').substr(0, 6);
+            }
         }
 
         const rewrite = superName
             .replace(rule.test, rule.to)
             .replace(/{(.?)hash(.?)}/, bundleHash.length > 0 ? `$1${bundleHash}$2` : '');
 
-        if ( this.config.silent != true )
+        if (this.config.silent !== true)
             logger.info({
                 message: `Rewrite ${superName} -> ${rewrite}`
             });

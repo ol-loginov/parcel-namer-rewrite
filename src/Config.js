@@ -8,6 +8,14 @@ export class Config {
     rules: NamerRule[]
     chain: string
     developmentHashing = false
+    /**
+     * Disable logging names
+     */
+    silent = false
+    /**
+     * Use file name hashes from parcel
+     */
+    useParcelHash = true
 
     constructor() {
         this.chain = '@parcel/namer-default';
@@ -28,8 +36,12 @@ export class Config {
         if (packageSection && 'chain' in packageSection) {
             this.chain = packageSection.chain;
         }
-        
+
         this.silent = packageSection && 'silent' in packageSection && packageSection.silent;
+
+        if (packageSection && 'useParcelHash' in packageSection) {
+            this.useParcelHash = !packageSection.useParcelHash;
+        }
 
         if (packageSection && 'rules' in packageSection) {
             Object.keys(packageSection.rules).forEach(k => {
