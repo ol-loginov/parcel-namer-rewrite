@@ -1,9 +1,14 @@
-import {CONFIG, Namer} from '@parcel/plugin';
+import {Namer} from '@parcel/plugin';
 import {Config} from "./Config";
 import {PluginLogger} from '@parcel/logger';
 import crypto from "crypto";
 import {md5FromFilePath} from "@parcel/utils";
 
+const CONFIG = Symbol.for('parcel-plugin-config');
+
+function regExpEscape(literal_string) {
+    return literal_string.replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, '\\$&');
+}
 
 // noinspection JSUnusedGlobalSymbols
 export default new Namer({
@@ -73,6 +78,11 @@ export default new Namer({
 
                 bundleHash = hash.digest('hex').substr(0, 6);
             }
+        }
+
+        // if we need hashing - remove bundle hash placeholder
+        if (bundleHash && bundle.hashReference) {
+            superName = superName.replace("." + bundle.hashReference, "")
         }
 
         const rewrite = superName

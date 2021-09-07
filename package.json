@@ -1,6 +1,6 @@
 {
   "name": "parcel-namer-rewrite",
-  "version": "2.0.0-beta.1-8",
+  "version": "2.0.0-rc.0",
   "description": "",
   "scripts": {
     "build": "rimraf ./target && babel src/ -d lib/",
@@ -22,18 +22,18 @@
     "flow-bin": "^0.136.0"
   },
   "dependencies": {
-    "@parcel/logger": "^2.0.0-alpha.3",
-    "@parcel/namer-default": "^2.0.0-beta.1",
-    "@parcel/package-manager": "^2.0.0-beta.1",
-    "@parcel/plugin": "^2.0.0-beta.1",
-    "@parcel/types": "^2.0.0-beta.1",
+    "@parcel/logger": "^2.0.0-rc.0",
+    "@parcel/namer-default": "^2.0.0-rc.0",
+    "@parcel/package-manager": "^2.0.0-rc.0",
+    "@parcel/plugin": "^2.0.0-rc.0",
+    "@parcel/types": "^2.0.0-rc.0",
     "assert": "^2.0.0"
   },
   "files": [
     "lib/*.js"
   ],
   "engines": {
-    "parcel": "^2.0.0-beta.1",
+    "parcel": "^2.0.0-rc.0",
     "node": ">= 10.0.0"
   }
 }
