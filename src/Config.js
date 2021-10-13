@@ -40,7 +40,7 @@ export class Config {
         this.silent = packageSection && 'silent' in packageSection && packageSection.silent;
 
         if (packageSection && 'useParcelHash' in packageSection) {
-            this.useParcelHash = !packageSection.useParcelHash;
+            this.useParcelHash = !!packageSection.useParcelHash;
         }
 
         if (packageSection && 'rules' in packageSection) {
