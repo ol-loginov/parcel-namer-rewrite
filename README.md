@@ -95,3 +95,17 @@ This plugin will log every renamed file. To disable this feature, add this optio
 ```
 
 
+### Disable in development mode
+
+You may want to disable the namer in development mode. To disable this feature, add this options to `package.json` :
+
+```json5
+{
+    "parcel-namer-rewrite": {
+        // ...
+        "developmentDisable" : true
+    }
+}
+```
+
+

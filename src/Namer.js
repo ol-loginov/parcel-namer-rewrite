@@ -6,10 +6,6 @@ import {md5FromFilePath} from "@parcel/utils";
 
 const CONFIG = Symbol.for('parcel-plugin-config');
 
-function regExpEscape(literal_string) {
-    return literal_string.replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, '\\$&');
-}
-
 // noinspection JSUnusedGlobalSymbols
 export default new Namer({
     config: Config | undefined,
@@ -21,8 +17,10 @@ export default new Namer({
             return null;
         }
 
+        const disable = config.developmentDisable && opts.options.mode === 'development';
+
         const nameFromSuper = await this.delegate.name(opts);
-        if (nameFromSuper != null) {
+        if (nameFromSuper != null && !disable) {
             return this.rewrite(opts.bundle, opts.bundleGraph, opts.options, nameFromSuper, opts.logger);
         }
         return nameFromSuper;

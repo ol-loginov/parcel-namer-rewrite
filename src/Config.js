@@ -7,6 +7,13 @@ const PACKAGE_JSON_SECTION = "parcel-namer-rewrite";
 export class Config {
     rules: NamerRule[]
     chain: string
+    /**
+     * Disable namer in development
+     */
+    developmentDisable = false
+    /**
+     * Disable name hashing in development
+     */
     developmentHashing = false
     /**
      * Disable logging names
@@ -61,6 +68,10 @@ export class Config {
 
         if (packageSection && 'developmentHashing' in packageSection) {
             this.developmentHashing = !!packageSection.developmentHashing;
+        }
+
+        if (packageSection && 'developmentDisable' in packageSection) {
+            this.developmentDisable = !!packageSection.developmentDisable;
         }
     }
 
