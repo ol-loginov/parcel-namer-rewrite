@@ -30,7 +30,7 @@ export class Config {
     }
 
     loadFromPackageFolder(rootFolder: string, logger: PluginLogger) {
-        const packageJson = fs.readFileSync(path.join(rootFolder, 'package.json')).toString();
+        const packageJson = fs.readFileSync(path.join(process.cwd(), 'package.json')).toString();
         const packageInfo = JSON.parse(packageJson);
         const packageSection = packageInfo[PACKAGE_JSON_SECTION];
         if (!packageSection) {
