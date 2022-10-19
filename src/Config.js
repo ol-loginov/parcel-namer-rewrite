@@ -5,16 +5,18 @@ import fs from 'fs';
 const PACKAGE_JSON_SECTION = "parcel-namer-rewrite";
 
 export class Config {
+    profileEnvKey = 'PARCEL-NAMER-REWRITE-PROFILE'
+
     rules: NamerRule[]
     chain: string
     /**
-     * Disable namer in development
+     * Disable in development
      */
-    developmentDisable = false
+    disable = false
     /**
-     * Disable name hashing in development
+     * Name hashing
      */
-    developmentHashing = false
+    hashing = '' // "never", "always"
     /**
      * Disable logging names
      */
@@ -29,7 +31,7 @@ export class Config {
         this.rules = [];
     }
 
-    loadFromPackageFolder(rootFolder: string, logger: PluginLogger) {
+    loadFromPackageFolder(rootFolder: string, env: {}, defaultProfiles: string[], logger: PluginLogger) {
         const packageJson = fs.readFileSync(path.join(rootFolder, 'package.json')).toString();
         const packageInfo = JSON.parse(packageJson);
         const packageSection = packageInfo[PACKAGE_JSON_SECTION];
@@ -40,19 +42,47 @@ export class Config {
             return;
         }
 
-        if (packageSection && 'chain' in packageSection) {
-            this.chain = packageSection.chain;
+        this._loadFromPackageSection(packageSection, logger);
+
+        let profileNames = '';
+        if (defaultProfiles) profileNames += ',' + defaultProfiles
+        if (this.profileEnvKey in env) profileNames += ',' + env[this.profileEnvKey]
+
+        const profileSections = packageSection['profiles'];
+        if (profileSections) {
+            profileNames.split(/[,]/)
+                .map(profile => profileSections[profile])
+                .filter(profile => !!profile)
+                .forEach(profile => {
+                    this._loadFromPackageSection(profile, logger)
+                });
+        }
+    }
+
+    _loadFromPackageSection(section, logger: PluginLogger) {
+        if (!section) return;
+
+        if ('profile-env-key' in section) {
+            this.profileEnvKey = section['profile-env-key'];
         }
 
-        this.silent = packageSection && 'silent' in packageSection && packageSection.silent;
-
-        if (packageSection && 'useParcelHash' in packageSection) {
-            this.useParcelHash = !!packageSection.useParcelHash;
+        if ('chain' in section) {
+            this.chain = section.chain;
         }
 
-        if (packageSection && 'rules' in packageSection) {
-            Object.keys(packageSection.rules).forEach(k => {
-                const ruleData = packageSection.rules[k];
+        if ('neverHashing' in section) {
+            this.neverHashing = !!section.neverHashing
+        }
+
+        this.silent = 'silent' in section && section.silent;
+
+        if ('useParcelHash' in section) {
+            this.useParcelHash = !!section.useParcelHash;
+        }
+
+        if ('rules' in section) {
+            Object.keys(section.rules).forEach(k => {
+                const ruleData = section.rules[k];
                 const ruleTo = typeof ruleData === 'string' ? ruleData : null;
                 if (ruleTo === null) {
                     logger.warn(`No "to" rule for test "${k}" `);
@@ -66,12 +96,19 @@ export class Config {
             })
         }
 
-        if (packageSection && 'developmentHashing' in packageSection) {
-            this.developmentHashing = !!packageSection.developmentHashing;
+        if ('developmentHashing' in section) {
+            throw Error(`The "developmentHashing" option is not supported any more. Add "development" profile and set {"hashing": "never"} there. See documentation for details here: https://github.com/ol-loginov/parcel-namer-rewrite`)
         }
 
-        if (packageSection && 'developmentDisable' in packageSection) {
-            this.developmentDisable = !!packageSection.developmentDisable;
+        if ('developmentDisable' in section) {
+            throw Error(`The "developmentDisable" option is not supported any more. Add "development" profile and set {"disable": false} there. See documentation for details here: https://github.com/ol-loginov/parcel-namer-rewrite`)
+        }
+
+        if ('hashing' in section) {
+            this.hashing = section['hashing'];
+        }
+        if ('disable' in section) {
+            this.disable = !!section['disable'];
         }
     }
 

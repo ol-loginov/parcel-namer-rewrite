@@ -12,24 +12,27 @@ export default new Namer({
     delegate: null,
 
     async name(opts: { bundle: Bundle, bundleGraph: {}, options: {}, logger: PluginLogger }) {
-        const config = this.ensureConfig(opts.options.projectRoot, opts.options.packageManager, opts.logger);
+        const config = this.ensureConfig(opts.options, opts.logger);
         if (!config) {
             return null;
         }
 
-        const disable = config.developmentDisable && opts.options.mode === 'development';
-
         const nameFromSuper = await this.delegate.name(opts);
-        if (nameFromSuper != null && !disable) {
+        if (nameFromSuper != null && !config.disable) {
             return this.rewrite(opts.bundle, opts.bundleGraph, opts.options, nameFromSuper, opts.logger);
         }
         return nameFromSuper;
     },
 
-    ensureConfig(projectRoot: string, packageManager: {}, logger: PluginLogger) {
+    ensureConfig(options: {}, logger: PluginLogger) {
         if (!this.config) {
+            const projectRoot = options.projectRoot
+            const packageManager = options.packageManager
+            const env = options.env
+            const profiles = options.mode
+
             const config = new Config();
-            config.loadFromPackageFolder(projectRoot, logger);
+            config.loadFromPackageFolder(projectRoot, env, profiles, logger);
             if (!config.chain) {
                 throw Error('No chain namer has been found in project. Set package.json#parcel-namer-rewrite:chain to set a delegate namer ("@parcel/namer-default" by default)');
             }
@@ -50,47 +53,53 @@ export default new Namer({
         return this.config;
     },
 
-    async rewrite(bundle: { id: string }, bundleGraph: {}, options: {}, superName: string, logger) {
-        const rule = this.config.selectRule(superName);
-        if (!rule) {
-            return superName;
+    async getBundleHash(bundle) {
+        if (this.config.hashing === 'never') return '';
+
+        if (this.config.useParcelHash && bundle.hashReference) {
+            return bundle.hashReference;
         }
 
-        let bundleHash = '';
+        if (this.config.hashing !== 'always') return ''
 
-        if (options.mode !== 'development' || this.config.developmentHashing) {
-            if (this.config.useParcelHash) {
-                bundleHash = bundle.hashReference;
-            } else {
-                let assets = [];
-                bundle.traverseAssets((asset) => assets.push(asset));
+        let assets = [];
+        bundle.traverseAssets((asset) => assets.push(asset));
 
-                let hash = crypto.createHash('md5');
-                for (let i = 0; i < assets.length; ++i) {
-                    const asset = assets[i];
-                    if (asset.filePath) {
-                        const fileHash = await md5FromFilePath(asset.fs, asset.filePath);
-                        hash.update([asset.filePath, fileHash].join(':'));
-                    }
-                }
-
-                bundleHash = hash.digest('hex').substr(0, 6);
+        let hash = crypto.createHash('md5');
+        for (let i = 0; i < assets.length; ++i) {
+            const asset = assets[i];
+            if (asset.filePath) {
+                const fileHash = await md5FromFilePath(asset.fs, asset.filePath);
+                hash.update([asset.filePath, fileHash].join(':'));
             }
         }
+        return hash.digest('hex').substring(0, 6);
+    },
 
-        // if we need hashing - remove bundle hash placeholder
-        if (bundleHash && bundle.hashReference) {
-            superName = superName.replace("." + bundle.hashReference, "")
+    async rewrite(bundle: { id: string }, bundleGraph: {}, options: {}, superName: string, logger) {
+        const neverHashing = this.config.hashing === 'never';
+
+        function superNameWithoutHashReference() {
+            return bundle.hashReference
+                ? superName.replace("." + bundle.hashReference, "")
+                : superName;
         }
 
-        const rewrite = superName
-            .replace(rule.test, rule.to)
-            .replace(/{(.?)hash(.?)}/, bundleHash.length > 0 ? `$1${bundleHash}$2` : '');
+        const rule = this.config.selectRule(superName);
+        if (!rule) {
+            return neverHashing ? superNameWithoutHashReference() : superName;
+        }
 
-        if (this.config.silent !== true)
+        const bundleHash = await this.getBundleHash(bundle, options);
+        const rewrite = superNameWithoutHashReference()
+            .replace(rule.test, rule.to)
+            .replace(/{(.?)hash(.?)}/, !neverHashing && bundleHash.length > 0 ? `$1${bundleHash}$2` : '');
+
+        if (this.config.silent !== true) {
             logger.info({
                 message: `Rewrite ${superName} -> ${rewrite}`
             });
+        }
 
         return rewrite;
     }
