@@ -27,8 +27,6 @@ export class Config {
     useParcelHash = true
 
     constructor() {
-        this.chain = '@parcel/namer-default';
-        this.rules = [];
     }
 
     loadFromPackageFolder(rootFolder: string, env: {}, defaultProfiles: string[], logger: PluginLogger) {
@@ -56,6 +54,16 @@ export class Config {
                 .forEach(profile => {
                     this._loadFromPackageSection(profile, logger)
                 });
+        }
+
+        if (!this.chain) {
+            this.chain = '@parcel/namer-default';
+            logger.info({message: 'Delegate namer is not configured. Use default "@parcel/namer-default"'});
+        }
+
+        if (!this.rules) {
+            this.rules = [];
+            logger.info({message: 'Rewrite rules are empty'})
         }
     }
 

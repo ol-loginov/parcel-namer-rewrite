@@ -1,6 +1,7 @@
 {
   "presets": [
-    "@parcel/babel-preset"
+    "@babel/preset-flow",
+    "@parcel/babel-preset-env"
   ],
   "sourceMaps": "inline"
 }
