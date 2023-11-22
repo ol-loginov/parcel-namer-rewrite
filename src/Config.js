@@ -5,7 +5,8 @@ import fs from 'fs';
 const PACKAGE_JSON_SECTION = "parcel-namer-rewrite";
 
 export class Config {
-    profileEnvKey = 'PARCEL-NAMER-REWRITE-PROFILE'
+    profileEnvKeyDeprecated = 'PARCEL-NAMER-REWRITE-PROFILE'
+    profileEnvKey = 'PARCEL_NAMER_REWRITE_PROFILE'
 
     rules: NamerRule[]
     chain: string
@@ -46,6 +47,10 @@ export class Config {
 
         let profileNames = '';
         if (defaultProfiles) profileNames += ',' + defaultProfiles
+        if (this.profileEnvKeyDeprecated in env) {
+            logger.warn({message: `You are using deprecated environment variable ${this.profileEnvKeyDeprecated}. Consider switch to ${this.profileEnvKey}`})
+            profileNames += ',' + env[this.profileEnvKeyDeprecated];
+        }
         if (this.profileEnvKey in env) profileNames += ',' + env[this.profileEnvKey]
 
         const profileSections = packageSection['profiles'];

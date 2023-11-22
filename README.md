@@ -166,10 +166,10 @@ In configuration below plugin is turned off for production mode:
 }
 ```
 
-To activate other profiles - use environment variable `PARCEL-NAMER-REWRITE-PROFILE`. Here you may see command line:
+To activate other profiles - use environment variable `PARCEL_NAMER_REWRITE_PROFILE`. Here you may see command line:
 
 ```commandline
-PARCEL-NAMER-REWRITE-PROFILE=myprofile parcel build
+PARCEL_NAMER_REWRITE_PROFILE=myprofile parcel build
 ```
 
 and corresponding configuration profile in package.json (it disables hashing completely)
@@ -190,5 +190,5 @@ and corresponding configuration profile in package.json (it disables hashing com
 You may activate multiple profiles with comma-delimited list of profile keys
 
 ```commandline
-PARCEL-NAMER-REWRITE-PROFILE=myprofile,profile2,profile3 parcel build
+PARCEL_NAMER_REWRITE_PROFILE=myprofile,profile2,profile3 parcel build
 ```
