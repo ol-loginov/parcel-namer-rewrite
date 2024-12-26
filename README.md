@@ -3,8 +3,11 @@ This plugin allows to rewrite bundle file names.
 ## Why?
 
 To get more control over bundle file names.
-You may find another useful plugin - https://github.com/ol-loginov/parcel-reporter-entries to
-get report about actual bundle file names.
+
+## Another useful plugins
+
+* https://github.com/ol-loginov/parcel-reporter-entries - to know actual bundle file names
+* https://github.com/ol-loginov/parcel-reporter-notify - to be informed about build complete/failure with notification (node-notify)
 
 ## Install and usage
 
