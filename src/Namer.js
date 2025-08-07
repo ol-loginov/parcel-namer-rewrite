@@ -17,6 +17,10 @@ export default new Namer({
             return null;
         }
 
+        if (config.skipTargets.includes(opts.bundle?.target?.name)) {
+            return await this.delegate.name(opts);
+        }
+
         const nameFromSuper = await this.delegate.name(opts);
         if (nameFromSuper != null && !config.disable) {
             return this.rewrite(opts.bundle, opts.bundleGraph, opts.options, nameFromSuper, opts.logger);
