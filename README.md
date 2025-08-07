@@ -49,6 +49,8 @@ Plugin takes all config from package.json file. Example of config is below:
       "styles/(.*).css": "$1.{hash}.css",
       "scripts/TestMePlease.js": "Dunno.js"
     },
+    /* Optionally skip certain targets */
+    "skipTargets": ["targetName"],
     /* profiles are optional */
     "profiles": {
       "development": {
