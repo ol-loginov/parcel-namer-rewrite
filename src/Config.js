@@ -26,6 +26,10 @@ export class Config {
      * Use file name hashes from parcel
      */
     useParcelHash = true
+    /**
+     * The targets that the namer will not apply to
+     */
+    skipTargets: string[] = [];
 
     constructor() {
         this.rules = [];
@@ -114,6 +118,10 @@ export class Config {
         }
         if ('disable' in section) {
             this.disable = !!section['disable'];
+        }
+
+        if ('skipTargets' in section) {
+            this.skipTargets = section['skipTargets'];
         }
     }
 
