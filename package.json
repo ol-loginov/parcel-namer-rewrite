@@ -1,6 +1,6 @@
 {
   "name": "parcel-namer-rewrite",
-  "version": "2.10.3-rc.4",
+  "version": "2.10.3-rc.5",
   "description": "",
   "scripts": {
     "build": "rimraf ./target && babel src/ -d lib/",
