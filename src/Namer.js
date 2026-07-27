@@ -2,7 +2,7 @@ import {Namer} from '@parcel/plugin';
 import {Config} from "./Config";
 import {PluginLogger} from '@parcel/logger';
 import crypto from "crypto";
-import {md5FromFilePath} from "@parcel/utils";
+import {hashFile} from "@parcel/utils";
 
 const CONFIG = Symbol.for('parcel-plugin-config');
 
@@ -73,7 +73,7 @@ export default new Namer({
         for (let i = 0; i < assets.length; ++i) {
             const asset = assets[i];
             if (asset.filePath) {
-                const fileHash = await md5FromFilePath(asset.fs, asset.filePath);
+                const fileHash = await hashFile(asset.fs, asset.filePath);
                 hash.update([asset.filePath, fileHash].join(':'));
             }
         }

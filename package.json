@@ -18,23 +18,23 @@
     "@babel/cli": "^7.23.0",
     "@babel/core": "^7.23.3",
     "@babel/preset-flow": "^7.23.3",
-    "@parcel/babel-preset-env": "^2.10.3",
+    "@parcel/babel-preset-env": "^2.16.4",
     "flow-bin": "^0.136.0",
     "rimraf": "^5.0.5"
   },
   "dependencies": {
-    "@parcel/logger": "^2.10.3",
-    "@parcel/namer-default": "^2.10.3",
-    "@parcel/package-manager": "^2.10.3",
-    "@parcel/plugin": "^2.10.3",
-    "@parcel/types": "^2.10.3",
+    "@parcel/logger": "^2.16.4",
+    "@parcel/namer-default": "^2.16.4",
+    "@parcel/package-manager": "^2.16.4",
+    "@parcel/plugin": "^2.16.4",
+    "@parcel/types": "^2.16.4",
     "assert": "^2.0.0"
   },
   "files": [
     "lib/*.js"
   ],
   "engines": {
-    "parcel": "^2.10.3",
+    "parcel": "^2.16.4",
     "node": ">= 10.0.0"
   }
 }
